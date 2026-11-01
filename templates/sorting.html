@@ -1,0 +1,66 @@
+{% extends 'base.html' %}
+{% block title %}Sorting{% endblock %}
+
+{% block content %}
+  <a class="back-link" href="{{ url_for('works') }}">&larr; Back to Works</a>
+  <h1>Sorting</h1>
+  <p class="lead">Pick a sort, press Play, and watch the bars get sorted. Switching the sort keeps the same bars, so you can compare them.</p>
+
+  <section class="panel solo">
+    <div class="row">
+      <div>
+        <label for="sv-algo">Algorithm</label>
+        <select id="sv-algo">
+          {% for key, a in info.items() %}
+          <option value="{{ key }}">{{ a.name }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div>
+        <label for="sv-size">Bars: <span id="sv-size-out">20</span></label>
+        <input id="sv-size" type="range" min="5" max="50" value="20">
+      </div>
+      <div>
+        <label for="sv-speed">Speed</label>
+        <input id="sv-speed" type="range" min="1" max="8" value="5">
+      </div>
+    </div>
+
+    <label for="sv-custom" class="ix-label">Or type your own numbers (1 to 99, separated by commas)</label>
+    <div class="sv-custom-row">
+      <input id="sv-custom" type="text" placeholder="5, 3, 8, 1, 9, 2" autocomplete="off">
+      <button id="sv-use" class="btn alt" type="button">Use these</button>
+      <button id="sv-shuffle" class="btn alt" type="button">New random bars</button>
+    </div>
+
+    <ul class="sv-legend" aria-label="Colour key">
+      <li><span class="sw s-base"></span>Not sorted yet</li>
+      <li><span class="sw s-cmp"></span>Comparing</li>
+      <li><span class="sw s-moved"></span>Moving</li>
+      <li><span class="sw s-pivot"></span>Pivot / smallest / item being placed</li>
+      <li><span class="sw s-done"></span>Sorted</li>
+    </ul>
+
+    <div id="sv-bars" class="sv-bars" role="img" aria-label="Bars to sort"></div>
+
+    <p id="sv-stats" class="sv-stats">Comparisons: 0 &middot; Moves: 0</p>
+    <div class="result" id="sv-msg">Press Play to start, or Step to go one move at a time.</div>
+    <p class="sr-only" id="sv-status" aria-live="polite"></p>
+
+    <div class="ll-group">
+      <button id="sv-restart" class="btn alt" type="button">Restart</button>
+      <button id="sv-back" class="btn alt" type="button">Back</button>
+      <button id="sv-play" class="btn" type="button">Play</button>
+      <button id="sv-step" class="btn alt" type="button">Step</button>
+      <button id="sv-end" class="btn alt" type="button">Skip to end</button>
+    </div>
+
+    <div class="note" id="sv-about"></div>
+  </section>
+
+  <script id="sv-info" type="application/json">{{ info|tojson }}</script>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='sorting.js') }}"></script>
+{% endblock %}

@@ -2,6 +2,7 @@ from flask import Flask, render_template, jsonify, request
 from stack import Stack
 from linked_list import LinkedList
 from my_queue import Queue
+from sorting import SORTS, INFO, sort_steps
 
 app = Flask(__name__)
 
@@ -288,6 +289,32 @@ def queue_action():
         return jsonify(error="Unknown action."), 400
 
     return jsonify(list=queue_to_list(), message=msg, mark=mark)
+
+
+# ---------- Sorting visualizer (uses my sorting.py) ----------
+MAX_BARS = 50
+
+
+@app.route('/works/sorting')
+def sorting_page():
+    return render_template('sorting.html', info=INFO)
+
+
+@app.route('/works/sorting/run', methods=['POST'])
+def sorting_run():
+    data = request.get_json(silent=True) or {}
+    name = data.get('algorithm', '')
+    arr = data.get('array')
+
+    if name not in SORTS:
+        return jsonify(error="Unknown sorting algorithm."), 400
+    if not isinstance(arr, list) or not 2 <= len(arr) <= MAX_BARS:
+        return jsonify(error="Use between 2 and " + str(MAX_BARS) + " numbers."), 400
+    if not all(isinstance(x, int) and not isinstance(x, bool) and 1 <= x <= 99 for x in arr):
+        return jsonify(error="Every number must be a whole number from 1 to 99."), 400
+
+    result, steps = sort_steps(name, arr)
+    return jsonify(sorted=result, steps=steps)
 
 
 @app.route('/profile')
