@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+{% block title %}Binary Tree{% endblock %}
+
+{% block content %}
+  <a class="back-link" href="{{ url_for('works') }}">&larr; Back to Works</a>
+  <h1>Binary Tree</h1>
+  <p class="lead">A binary search tree: smaller values go left, bigger values go right. Insert, search, delete, and watch the traversals.</p>
+
+  <section class="panel solo">
+    <div class="bt-wrap">
+      <svg id="bt-svg" class="bt-svg" role="img" aria-label="Binary tree"></svg>
+    </div>
+
+    <div class="row">
+      <div><label for="bt-value">Value (1 to 999)</label><input id="bt-value" type="text" inputmode="numeric" placeholder="45" autocomplete="off"></div>
+    </div>
+
+    <div class="ll-group">
+      <strong>Edit</strong>
+      <button class="btn" type="button" data-bt="insert">Insert</button>
+      <button class="btn alt" type="button" data-bt="search">Search</button>
+      <button class="btn alt" type="button" data-bt="delete">Delete</button>
+    </div>
+    <div class="ll-group">
+      <strong>Traverse</strong>
+      <button class="btn" type="button" data-bt="post_order">Post-order</button>
+      <button class="btn alt" type="button" data-bt="in_order">In-order</button>
+      <button class="btn alt" type="button" data-bt="pre_order">Pre-order</button>
+    </div>
+    <div class="ll-group">
+      <strong>Tree</strong>
+      <button class="btn alt" type="button" data-bt="reset">Reset tree</button>
+    </div>
+
+    <span class="ix-label" id="bt-order-label">Nodes visited, in order</span>
+    <div id="bt-order" class="ll-view" aria-labelledby="bt-order-label">Run a search or a traversal to see the order here.</div>
+
+    <div class="result" id="bt-msg" aria-live="polite">The tree starts with 50, 30, 70, 20, 40, 60, 80. Try the buttons. The tree holds up to {{ max_nodes }} nodes.</div>
+
+    <div class="note">
+      <strong>Post-order</strong> visits the left side, then the right side, then the node itself, so a parent always comes after its children.
+      <strong>Delete</strong> has three cases: no children (remove it), one child (the child takes its place), two children (the smallest value on the right, the inorder successor, takes its place).
+    </div>
+  </section>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='binarytree.js') }}"></script>
+{% endblock %}

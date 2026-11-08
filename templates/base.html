@@ -14,7 +14,7 @@
 <header>
   <nav aria-label="Main">
     <ul>
-      <li><a href="{{ url_for('works') }}"{% if request.endpoint in ('index', 'works', 'uppercase', 'linkedlist', 'queue_page', 'sorting_page', 'circle', 'triangle', 'infixtopostfix') %} aria-current="page"{% endif %}>Works</a></li>
+      <li><a href="{{ url_for('works') }}"{% if request.endpoint in ('index', 'works', 'uppercase', 'linkedlist', 'queue_page', 'sorting_page', 'binary_tree_page', 'circle', 'triangle', 'infixtopostfix') %} aria-current="page"{% endif %}>Works</a></li>
       <li><a href="{{ url_for('profile') }}"{% if request.endpoint == 'profile' %} aria-current="page"{% endif %}>Profile</a></li>
       <li><a href="{{ url_for('contact') }}"{% if request.endpoint == 'contact' %} aria-current="page"{% endif %}>Contact</a></li>
     </ul>

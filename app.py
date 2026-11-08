@@ -3,6 +3,7 @@ from stack import Stack
 from linked_list import LinkedList
 from my_queue import Queue
 from sorting import SORTS, INFO, sort_steps
+from binary_tree import BinaryTree
 
 app = Flask(__name__)
 
@@ -289,6 +290,97 @@ def queue_action():
         return jsonify(error="Unknown action."), 400
 
     return jsonify(list=queue_to_list(), message=msg, mark=mark)
+
+
+# ---------- Binary Tree (uses my BinaryTree class in binary_tree.py) ----------
+MAX_NODES = 15
+START_VALUES = [50, 30, 70, 20, 40, 60, 80]
+
+
+def new_tree():
+    t = BinaryTree()
+    for v in START_VALUES:
+        t.insert(v)
+    return t
+
+
+my_tree = new_tree()
+
+
+@app.route('/works/binary-tree')
+def binary_tree_page():
+    return render_template('binarytree.html', max_nodes=MAX_NODES)
+
+
+@app.route('/works/binary-tree/state')
+def binary_tree_state():
+    return jsonify(tree=my_tree.to_dict())
+
+
+@app.route('/works/binary-tree/action', methods=['POST'])
+def binary_tree_action():
+    global my_tree
+    data = request.get_json(silent=True) or {}
+    action = data.get('action', '')
+    raw = str(data.get('value', '')).strip()
+    msg = ""
+    mark = None      # value to highlight when the animation ends
+    path = []        # values visited, in order (search)
+    order = []       # values visited, in order (traversals)
+
+    if action == "reset":
+        my_tree = new_tree()
+        return jsonify(tree=my_tree.to_dict(), message="The tree was reset to " +
+                       ", ".join(str(v) for v in START_VALUES) + ".", mark=None, path=[], order=[])
+
+    if action in ("insert", "search", "delete"):
+        if not raw.lstrip('-').isdigit() or not 1 <= int(raw) <= 999:
+            return jsonify(error="Enter a whole number from 1 to 999."), 400
+        value = int(raw)
+
+        if action == "insert":
+            if my_tree.size() >= MAX_NODES:
+                msg = "The tree is full (" + str(MAX_NODES) + " nodes) so the drawing stays readable. Delete a node first."
+            elif my_tree.insert(value):
+                msg = "Inserted " + str(value) + "."
+                mark = value
+                my_tree.search(my_tree.root, value, path)
+            else:
+                msg = str(value) + " is already in the tree. The tree is unchanged."
+
+        elif action == "search":
+            found = my_tree.search(my_tree.root, value, path)
+            if found is not None:
+                msg = "Found " + str(value) + " after checking " + str(len(path)) + " node" + \
+                      ("" if len(path) == 1 else "s") + "."
+                mark = value
+            else:
+                msg = str(value) + " is not in the tree. Checked " + str(len(path)) + " node" + \
+                      ("" if len(path) == 1 else "s") + "."
+
+        else:
+            if my_tree.remove(value):
+                msg = my_tree.delete_note
+            else:
+                msg = my_tree.delete_note + " The tree is unchanged."
+
+    elif action in ("post_order", "in_order", "pre_order"):
+        if my_tree.root is None:
+            msg = "The tree is empty."
+        elif action == "post_order":
+            order = my_tree.post_traversal(my_tree.root, [])
+            msg = "Post-order: left, then right, then the node itself."
+        elif action == "in_order":
+            order = my_tree.in_traversal(my_tree.root, [])
+            msg = "In-order: left, the node, then right. On a search tree this is sorted."
+        else:
+            order = my_tree.pre_traversal(my_tree.root, [])
+            msg = "Pre-order: the node, then left, then right."
+
+    else:
+        return jsonify(error="Unknown action."), 400
+
+    return jsonify(tree=my_tree.to_dict(), message=msg, mark=mark, path=path, order=order)
 
 
 # ---------- Sorting visualizer (uses my sorting.py) ----------

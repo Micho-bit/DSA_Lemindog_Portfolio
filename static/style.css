@@ -139,3 +139,17 @@
   @media (max-width:520px){.show-vals .bar-val{font-size:.55rem}}
   @media (prefers-reduced-motion:no-preference){.bar{transition:height .08s linear}}
   .sv-stats{margin:10px 0 0;color:var(--muted);font-size:.95rem}
+
+  /* Binary tree */
+  .bt-wrap{margin-bottom:20px;padding:12px;background:var(--bg);border-radius:8px;overflow-x:auto}
+  .bt-svg{display:block;width:100%;height:auto;max-height:520px;margin:0 auto}
+  .bt-edge{stroke:var(--muted);stroke-width:2}
+  .bt-node circle{fill:var(--card);stroke:var(--accent);stroke-width:3}
+  .bt-node text{fill:var(--ink);font-weight:700;font-size:15px}
+  .bt-node.seen circle{fill:color-mix(in srgb,var(--accent) 30%,var(--card))}
+  .bt-node.cur circle{fill:var(--cmp);stroke:var(--ink)}
+  .bt-node.cur text{fill:#0B1B3A}
+  .bt-node.found circle{fill:var(--done);stroke:var(--done);stroke-width:5}
+  .bt-node.found text{fill:var(--accent-ink)}
+  .bt-empty{fill:var(--muted);font-size:15px}
+  @media (prefers-reduced-motion:no-preference){.bt-node circle{transition:fill .2s}}
